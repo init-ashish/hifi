@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: normal;
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .operation-btn {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .operation-btn:hover {
+            background-color: #333;
+            border-color: #666;
+        }
+
+        .quiz-section {
+            display: none;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .timer {
+            background-color: #222;
+            border: 1px solid #444;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .progress-info {
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+
+        .progress-bar-container {
+            background-color: #222;
+            height: 4px;
+            border-radius: 2px;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background-color: #fff;
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .question {
+            font-size: 2rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: #222;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        .answer-input {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 0.8rem;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 150px;
+            margin: 1rem;
+            border-radius: 4px;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #666;
+            background-color: #333;
+        }
+
+        .btn {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #333;
+            border-color: #666;
+        }
+
+        .btn-secondary {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #222;
+        }
+
+        .results-section {
+            display: none;
+            text-align: left;
+        }
+
+        .summary {
+            background-color: #222;
+            border: 1px solid #444;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .summary h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .result-item {
+            background-color: #222;
+            border: 1px solid #444;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid #4CAF50;
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid #f44336;
+        }
+
+        .result-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-details {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .question {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Math Practice</h1>
+        
+        <!-- Menu Section -->
+        <div id="menu">
+            <div class="menu-grid">
+                <button class="operation-btn" onclick="startQuiz('addition')">Addition</button>
+                <button class="operation-btn" onclick="startQuiz('subtraction')">Subtraction</button>
+                <button class="operation-btn" onclick="startQuiz('multiplication')">Multiplication</button>
+                <button class="operation-btn" onclick="startQuiz('division')">Division</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="quiz-section">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="progress-info" id="progressInfo">Question 1 of 20</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="question" id="question">Ready?</div>
+            <input type="number" id="answerInput" class="answer-input" placeholder="Answer">
+            <br>
+            <button class="btn" onclick="submitAnswer()">Submit</button>
+            <button class="btn btn-secondary" onclick="showMenu()">Back</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-section">
+            <div class="summary">
+                <h2>Results</h2>
+                <div id="summaryContent"></div>
+            </div>
+            <div id="detailedResults"></div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn" onclick="showMenu()">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const AppState = {
+            currentOperation: '',
+            currentQuestionIndex: 0,
+            questions: [],
+            answers: [],
+            totalStartTime: 0,
+            questionStartTime: 0,
+            timer: null
+        };
+
+        // Question Generator
+        const QuestionGenerator = {
+            generateNumber(min = 10, max = 99) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            },
+
+            createQuestion(operation) {
+                let num1 = this.generateNumber();
+                let num2 = this.generateNumber();
+                
+                switch (operation) {
+                    case 'addition':
+                        return {
+                            text: `${num1} + ${num2}`,
+                            answer: num1 + num2,
+                            operation: '+'
+                        };
+                    case 'subtraction':
+                        if (num1 < num2) [num1, num2] = [num2, num1];
+                        return {
+                            text: `${num1} - ${num2}`,
+                            answer: num1 - num2,
+                            operation: '-'
+                        };
+                    case 'multiplication':
+                        return {
+                            text: `${num1} × ${num2}`,
+                            answer: num1 * num2,
+                            operation: '×'
+                        };
+                    case 'division':
+                        const product = num1 * num2;
+                        return {
+                            text: `${product} ÷ ${num1}`,
+                            answer: num2,
+                            operation: '÷'
+                        };
+                }
+            },
+
+            generateQuestions(operation, count = 20) {
+                const questions = [];
+                for (let i = 0; i < count; i++) {
+                    questions.push(this.createQuestion(operation));
+                }
+                return questions;
+            }
+        };
+
+        // Timer Management
+        const Timer = {
+            start() {
+                AppState.timer = setInterval(() => {
+                    const elapsed = Date.now() - AppState.totalStartTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    document.getElementById('timer').textContent = 
+                        `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            },
+
+            stop() {
+                if (AppState.timer) {
+                    clearInterval(AppState.timer);
+                    AppState.timer = null;
+                }
+            },
+
+            formatTime(milliseconds) {
+                const minutes = Math.floor(milliseconds / 60000);
+                const seconds = Math.floor((milliseconds % 60000) / 1000);
+                return minutes > 0 ? `${minutes}:${seconds.toString().padStart(2, '0')}` : `${seconds}s`;
+            }
+        };
+
+        // UI Management
+        const UI = {
+            showSection(sectionId) {
+                document.getElementById('menu').style.display = 'none';
+                document.getElementById('quiz').style.display = 'none';
+                document.getElementById('results').style.display = 'none';
+                document.getElementById(sectionId).style.display = 'block';
+            },
+
+            updateProgress() {
+                const progress = (AppState.currentQuestionIndex / AppState.questions.length) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressInfo').textContent = 
+                    `Question ${AppState.currentQuestionIndex + 1} of ${AppState.questions.length}`;
+            },
+
+            displayQuestion() {
+                const question = AppState.questions[AppState.currentQuestionIndex];
+                document.getElementById('question').textContent = question.text + ' = ?';
+                document.getElementById('answerInput').value = '';
+                document.getElementById('answerInput').focus();
+                this.updateProgress();
+            },
+
+            displayResults() {
+                const totalTime = Date.now() - AppState.totalStartTime;
+                const correctCount = AppState.answers.filter(a => a.correct).length;
+                const accuracy = Math.round((correctCount / AppState.answers.length) * 100);
+
+                // Summary
+                document.getElementById('summaryContent').innerHTML = `
+                    <p><strong>Operation:</strong> ${AppState.currentOperation}</p>
+                    <p><strong>Score:</strong> ${correctCount}/${AppState.answers.length} (${accuracy}%)</p>
+                    <p><strong>Total Time:</strong> ${Timer.formatTime(totalTime)}</p>
+                    <p><strong>Average per Question:</strong> ${Timer.formatTime(totalTime / AppState.answers.length)}</p>
+                `;
+
+                // Detailed results
+                let detailsHTML = '';
+                AppState.answers.forEach((answer, index) => {
+                    detailsHTML += `
+                        <div class="result-item ${answer.correct ? 'correct' : 'incorrect'}">
+                            <div class="result-header">Question ${index + 1}: ${answer.question.text} = ?</div>
+                            <div class="result-details">
+                                Your Answer: ${answer.userAnswer || 'No answer'} | 
+                                Correct: ${answer.question.answer} | 
+                                Time: ${Timer.formatTime(answer.time)} | 
+                                ${answer.correct ? 'Correct' : 'Incorrect'}
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('detailedResults').innerHTML = detailsHTML;
+            }
+        };
+
+        // Main Functions
+        function startQuiz(operation) {
+            AppState.currentOperation = operation;
+            AppState.currentQuestionIndex = 0;
+            AppState.questions = QuestionGenerator.generateQuestions(operation);
+            AppState.answers = [];
+            AppState.totalStartTime = Date.now();
+
+            UI.showSection('quiz');
+            nextQuestion();
+            Timer.start();
+        }
+
+        function nextQuestion() {
+            if (AppState.currentQuestionIndex < AppState.questions.length) {
+                AppState.questionStartTime = Date.now();
+                UI.displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const question = AppState.questions[AppState.currentQuestionIndex];
+            const questionTime = Date.now() - AppState.questionStartTime;
+
+            AppState.answers.push({
+                question: question,
+                userAnswer: userAnswer,
+                correct: userAnswer === question.answer,
+                time: questionTime
+            });
+
+            AppState.currentQuestionIndex++;
+            nextQuestion();
+        }
+
+        function finishQuiz() {
+            Timer.stop();
+            UI.showSection('results');
+            UI.displayResults();
+        }
+
+        function showMenu() {
+            Timer.stop();
+            UI.showSection('menu');
+        }
+
+        // Event Listeners
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+
+        // Initialize
+        UI.showSection('menu');
+    </script>
+</body>
+</html>
